@@ -8,9 +8,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 activity = Activity(name="!help", type=ActivityType.listening)
-bot = commands.Bot(command_prefix='!', activity=activity, intents=discord.Intents.all())
+bot = commands.Bot(command_prefix='!', activity=activity,
+                   intents=discord.Intents.all())
 
 token = os.getenv("TOKEN")
+
 
 async def load():
     bot.remove_command('help')
@@ -19,6 +21,7 @@ async def load():
         if filename.endswith(".py") and not filename.startswith("main"):
             await bot.load_extension(filename[:-3])
     print("Extensions loaded.")
+
 
 async def main():
     async with bot:

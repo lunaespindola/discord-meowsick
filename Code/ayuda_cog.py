@@ -4,11 +4,10 @@ from discord.ext import commands
 
 
 async def setup(bot):
-    await bot.add_cog(help_cog(bot))
-    
+    await bot.add_cog(ayuda_cog(bot))
 
 
-class help_cog(commands.Cog):
+class ayuda_cog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.embedOrange = 0xeab148
@@ -16,11 +15,11 @@ class help_cog(commands.Cog):
 
     def infoEmbedGen(self, name):
         embed = discord.Embed(
-            title="Hello There!",
+            title="¡Hola!",
             description=f"""
-            Hello, I'm {name}! You can type any command after typing my prefix **`'{self.bot.command_prefix}'`** to activate them. Use **`!help`** to see some command options.
+            ¡Hola, soy {name}! Puedes escribir cualquier comando después de escribir mi prefijo **`'{self.bot.command_prefix}'`** para activarlos. Utiliza **`!ayuda`** para ver algunas opciones de comando.
 
-            Here is a link to my [webpage](https://www.lunaespindola.dev) if you wanted to check it out!""",
+            Aquí tienes un enlace a mi [página web](https://www.lunaespindola.dev) si quisieras echarle un vistazo!""",
             colour=self.embedOrange
         )
         return embed
@@ -28,7 +27,7 @@ class help_cog(commands.Cog):
     def errorEmbedGen(self, error):
         embed = discord.Embed(
             title="ERROR :(",
-            description="There was an error. You can likely keep using the bot as is, or just to be safe, you can ask your server administrator to use !reboot to reboot the bot.\n\nError:\n**`" +
+            description="Hubo un error. Probablemente puedas seguir usando el bot tal como está, o, por si acaso, puedes pedirle a tu administrador de servidor que use !reiniciar para reiniciar el bot.\n\nError:\n**`" +
             str(error) + "`**",
             colour=self.embedDarkPink
         )
@@ -55,16 +54,17 @@ class help_cog(commands.Cog):
             botNames[guild.id] = nickname
 
     @ commands.command(
-        name="help",
-        aliases=["h"],
+        name="ayuda",
+        aliases=["b"],
         help="""
-            (command_name)
-            Provides a description of all commands or a longer description of an inputted command
-            Gives a description of a specified command (optional). If no command is specified, then gives a less detailed description of all commands.
+            (nombre_de_comando)
+            Proporciona una descripción de todos los comandos o una descripción más detallada de un comando de entrada
+            Da una descripción de un comando especificado (opcional). Si no se especifica ningún comando, entonces da una descripción menos detallada de todos los comandos.
             """
     )
-    async def help(self, ctx, arg=""):
-        helpCog = self.bot.get_cog('help_cog')
+    
+    async def ayuda(self, ctx, arg=""):
+        helpCog = self.bot.get_cog('ayuda_cog')
         musicCog = self.bot.get_cog('music_cog')
         commands = helpCog.get_commands() + musicCog.get_commands()
         if arg != "":
@@ -73,7 +73,7 @@ class help_cog(commands.Cog):
                 if c.name == arg:
                     command = commands[i]
             if command == None:
-                await ctx.send("That is not a name of an available command.")
+                await ctx.send("Ese no es el nombre de un comando disponible.")
                 return
 
             arguments = command.help.split("\n")[0]
@@ -83,12 +83,12 @@ class help_cog(commands.Cog):
                 aliases += f"!{a}, "
             aliases = aliases.rstrip(", ")
             commandsEmbed = discord.Embed(
-                title=f"!{command.name} Command Info",
+                title=f"!{command.name} Información de Comando",
                 description=f"""
-                Arguments: **`{arguments}`**
+                Argumentos: **`{arguments}`**
                 {longHelp}
 
-                Aliases: **`{aliases}`**
+                Alias: **`{aliases}`**
                 """,
                 colour=self.embedOrange
             )
@@ -100,52 +100,52 @@ class help_cog(commands.Cog):
                 shortHelp = c.help.split("\n")[1]
                 commandDescription += f"**`!{c.name} {arguments}`** - {shortHelp}\n"
             commandsEmbed = discord.Embed(
-                title="Command List",
+                title="Lista de Comandos",
                 description=commandDescription,
                 colour=self.embedOrange
             )
 
         commandKey = """
-            **`Command Prefix`** - '!'
+            **`Prefijo de Comando`** - '!'
 
-            **`!command <>`** - No arguments required
-            **`!command ()`** - Optional argument
-            **`!command []`** - Required argument
-            **`!command [arg]`** - 'arg' specifies argument type (eg. "url" or "keywords")
-            **`!command (this || that)`** - Options between mutually exclusive inputs (this or that)
+            **`!comando <>`** - No se requieren argumentos
+            **`!comando ()`** - Argumento opcional
+            **`!comando []`** - Argumento requerido
+            **`!comando [arg]`** - 'arg' especifica el tipo de argumento (por ejemplo, "url" o "palabras clave")
+            **`!comando (esto || eso)`** - Opciones entre entradas mutuamente excluyentes (esto o eso)
         """
 
         keyEmbed = discord.Embed(
-            title="Key",
+            title="Clave",
             description=commandKey,
             colour=self.embedOrange
         )
         await ctx.send(embed=commandsEmbed)
         await ctx.send(embed=keyEmbed)
-
+        
     @ commands.command(
-        name="reboot",
-        aliases=["rb"],
+        name="reiniciar",
+        aliases=["ri"],
         help="""
             <>
-            Completely restarts the bot.
-            Gives a complete restart of the bot. This command can only be called by the owner of the server.
+            Reinicia completamente el bot.
+            Da un reinicio completo del bot. Este comando solo puede ser llamado por el propietario del servidor.
             """
     )
-    async def reboot(self, ctx):
+    async def reiniciar(self, ctx):
         if ctx.message.author.guild_permissions.administrator:
-            await ctx.send("Rebooting application now!")
+            await ctx.send("¡Reiniciando la aplicación ahora!")
             await self.bot.close()
         else:
-            await ctx.send("You do not have proper permissions to reboot me.")
-
+            await ctx.send("No tienes permisos adecuados para reiniciarme.")
+            
     @commands.command(
-        name='info',
+        name='inf',
         aliases=[],
         help="""
             <>
-            Gives info about the bot
-            Gives info about the bot
+            Da información sobre el bot
+            Da información sobre el bot
             """
     )
     async def info(self, ctx):
